@@ -135,8 +135,22 @@
         // Le bouton est maintenant aligné normalement avec flexbox
     }
 
+    // Variable pour éviter les appels multiples simultanés
+    let isMoving = false;
+    let lastMoveTime = 0;
+    const moveCooldown = 50; // Délai minimum entre les mouvements (ms)
+
     // Fonction pour faire fuir le bouton No
     function makeButtonRunAway() {
+        // Empêcher les appels multiples simultanés
+        const now = Date.now();
+        if (isMoving || (now - lastMoveTime) < moveCooldown) {
+            return;
+        }
+        
+        isMoving = true;
+        lastMoveTime = now;
+        
         const maxX = window.innerWidth - btnNon.offsetWidth - 20;
         const maxY = window.innerHeight - btnNon.offsetHeight - 20;
         const minX = 20;
@@ -173,38 +187,21 @@
         btnNon.style.position = 'fixed';
         btnNon.style.zIndex = '1000';
         
-        // Forcer un reflow pour s'assurer que le changement est appliqué
-        btnNon.offsetHeight;
-        
         // Réactiver la transition après un court délai
         setTimeout(() => {
             btnNon.style.transition = 'all 0.1s ease';
-        }, 10);
+            isMoving = false;
+        }, 50);
     }
 
-    // Le bouton NO s'enfuit quand on survole (desktop)
+    // Le bouton NO s'enfuit quand on survole (desktop uniquement)
     btnNon.addEventListener('mouseover', makeButtonRunAway);
     
-    // Le bouton NO s'enfuit quand on approche (universel - fonctionne sur desktop et mobile)
-    btnNon.addEventListener('pointerenter', makeButtonRunAway);
-    
-    // Le bouton NO s'enfuit quand on touche (mobile)
+    // Le bouton NO s'enfuit quand on touche (mobile uniquement)
     btnNon.addEventListener('touchstart', (e) => {
         e.preventDefault();
         makeButtonRunAway();
-    });
-    
-    // Le bouton NO s'enfuit aussi quand on approche (mobile)
-    btnNon.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        makeButtonRunAway();
-    });
-    
-    // Le bouton NO s'enfuit aussi quand on essaie de cliquer
-    btnNon.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        makeButtonRunAway();
-    });
+    }, { passive: false });
 
     // Le bouton YES gagne
     btnOui.addEventListener('click', () => {
