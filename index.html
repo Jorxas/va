@@ -135,21 +135,75 @@
         // Le bouton est maintenant aligné normalement avec flexbox
     }
 
-    // Le bouton NO s'enfuit quand on survole
-    btnNon.addEventListener('mouseover', () => {
+    // Fonction pour faire fuir le bouton No
+    function makeButtonRunAway() {
         const maxX = window.innerWidth - btnNon.offsetWidth - 20;
         const maxY = window.innerHeight - btnNon.offsetHeight - 20;
         const minX = 20;
         const minY = 20;
         
-        const x = Math.random() * (maxX - minX) + minX;
-        const y = Math.random() * (maxY - minY) + minY;
+        // Récupérer la position actuelle
+        const rect = btnNon.getBoundingClientRect();
+        const currentX = rect.left;
+        const currentY = rect.top;
         
+        let x, y;
+        let attempts = 0;
+        const minDistance = 100; // Distance minimale de déplacement
+        
+        // S'assurer que la nouvelle position est suffisamment éloignée
+        do {
+            x = Math.random() * (maxX - minX) + minX;
+            y = Math.random() * (maxY - minY) + minY;
+            attempts++;
+            
+            // Calculer la distance
+            const distance = Math.sqrt(Math.pow(x - currentX, 2) + Math.pow(y - currentY, 2));
+            
+            // Si la distance est suffisante ou si on a essayé 10 fois, on prend cette position
+            if (distance >= minDistance || attempts >= 10) {
+                break;
+            }
+        } while (attempts < 10);
+        
+        // Désactiver la transition pour un mouvement instantané
+        btnNon.style.transition = 'none';
         btnNon.style.left = x + 'px';
         btnNon.style.top = y + 'px';
         btnNon.style.position = 'fixed';
-        btnNon.style.transition = 'all 0.1s ease';
         btnNon.style.zIndex = '1000';
+        
+        // Forcer un reflow pour s'assurer que le changement est appliqué
+        btnNon.offsetHeight;
+        
+        // Réactiver la transition après un court délai
+        setTimeout(() => {
+            btnNon.style.transition = 'all 0.1s ease';
+        }, 10);
+    }
+
+    // Le bouton NO s'enfuit quand on survole (desktop)
+    btnNon.addEventListener('mouseover', makeButtonRunAway);
+    
+    // Le bouton NO s'enfuit quand on approche (universel - fonctionne sur desktop et mobile)
+    btnNon.addEventListener('pointerenter', makeButtonRunAway);
+    
+    // Le bouton NO s'enfuit quand on touche (mobile)
+    btnNon.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        makeButtonRunAway();
+    });
+    
+    // Le bouton NO s'enfuit aussi quand on approche (mobile)
+    btnNon.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        makeButtonRunAway();
+    });
+    
+    // Le bouton NO s'enfuit aussi quand on essaie de cliquer
+    btnNon.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        makeButtonRunAway();
     });
 
     // Le bouton YES gagne
