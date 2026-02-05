@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Will you be my Valentine?</title>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -130,6 +132,51 @@
     const btnOui = document.getElementById('btn-oui');
     const content = document.getElementById('content');
 
+    // Compteur de tentatives sur le bouton "No"
+    let noButtonAttempts = 0;
+
+    // Configuration EmailJS - REMPLACEZ CES VALEURS PAR LES VÔTRES
+    // 1. Créez un compte gratuit sur https://www.emailjs.com/
+    // 2. Créez un service email (Gmail, Outlook, etc.)
+    // 3. Créez un template d'email
+    // 4. Remplacez les valeurs ci-dessous :
+    const EMAILJS_SERVICE_ID = 'service_zsf5udk'; // ✅ Service ID configuré
+    const EMAILJS_TEMPLATE_ID = 'template_o7x83s7'; // ✅ Template ID configuré
+    const EMAILJS_PUBLIC_KEY = 'apIUUvhLzrwa60FGh'; // ✅ Public Key configurée
+    const YOUR_EMAIL = 'pokemtezo5@gmail.com'; // ✅ Email configuré
+
+    // Initialiser EmailJS
+    (function() {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    })();
+
+    // Fonction pour envoyer un email
+    function sendEmail(action, attempts) {
+        // Ne pas envoyer si les valeurs ne sont pas configurées
+        if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID' || 
+            EMAILJS_TEMPLATE_ID === 'YOUR_TEMPLATE_ID' || 
+            EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+            console.log('EmailJS non configuré. Veuillez configurer les identifiants.');
+            return;
+        }
+
+        const templateParams = {
+            to_email: YOUR_EMAIL,
+            action: action, // 'yes_clicked' ou 'no_attempts'
+            attempts: attempts,
+            timestamp: new Date().toLocaleString('fr-FR'),
+            user_agent: navigator.userAgent,
+            screen_size: `${window.innerWidth}x${window.innerHeight}`
+        };
+
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+            .then(function(response) {
+                console.log('Email envoyé avec succès!', response.status, response.text);
+            }, function(error) {
+                console.log('Erreur lors de l\'envoi de l\'email:', error);
+            });
+    }
+
     // Position initiale du bouton No (pas nécessaire maintenant qu'il est en position relative)
     function setInitialPosition() {
         // Le bouton est maintenant aligné normalement avec flexbox
@@ -147,6 +194,9 @@
         if (isMoving || (now - lastMoveTime) < moveCooldown) {
             return;
         }
+        
+        // Incrémenter le compteur de tentatives
+        noButtonAttempts++;
         
         isMoving = true;
         lastMoveTime = now;
@@ -208,6 +258,9 @@
         // Envoi du clic à l'API pour compter
         fetch('https://api.countapi.xyz/hit/mon-valentin-2026/clics')
             .catch(err => console.log('API call failed:', err));
+
+        // Envoyer un email avec les statistiques
+        sendEmail('yes_clicked', noButtonAttempts);
 
         // Changement du contenu
         content.innerHTML = `
