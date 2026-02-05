@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will you be my Valentine?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .bear-image {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #000;
+            margin: 0;
+        }
+
+        .heart-arrow {
+            display: inline-block;
+            font-size: 2rem;
+            margin-left: 0.5rem;
+        }
+
+        .buttons {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            font-weight: 600;
+            color: white;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #btn-oui {
+            background-color: #4CAF50;
+        }
+
+        #btn-oui:hover {
+            background-color: #45a049;
+        }
+
+        #btn-non {
+            background-color: #f44336;
+            position: absolute;
+        }
+
+        #btn-non:hover {
+            background-color: #da190b;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .bear-image {
+                max-width: 250px;
+            }
+
+            button {
+                padding: 10px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="content">
+        <img class="bear-image" src="https://i.imgur.com/bear-rose-valentine.png" alt="Bear with rose" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <svg class="bear-image" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+            <circle cx="200" cy="180" r="80" fill="#d4a574"/>
+            <circle cx="180" cy="160" r="15" fill="#000"/>
+            <circle cx="220" cy="160" r="15" fill="#000"/>
+            <ellipse cx="200" cy="190" rx="20" ry="15" fill="#8b4513"/>
+            <path d="M 200 200 Q 200 220 180 230" stroke="#8b4513" stroke-width="3" fill="none"/>
+            <circle cx="200" cy="250" r="60" fill="#d4a574"/>
+            <ellipse cx="200" cy="320" rx="50" ry="40" fill="#d4a574"/>
+            <path d="M 120 200 Q 100 180 90 160 Q 100 150 120 160" fill="#d4a574"/>
+            <path d="M 280 200 Q 300 180 310 160 Q 300 150 280 160" fill="#d4a574"/>
+            <circle cx="150" cy="140" r="8" fill="#ff69b4"/>
+            <circle cx="250" cy="140" r="8" fill="#ff69b4"/>
+            <circle cx="200" cy="120" r="6" fill="#ff69b4"/>
+            <path d="M 200 100 Q 190 80 200 70 Q 210 80 200 100" fill="#ff1493" stroke="#ff1493" stroke-width="2"/>
+        </svg>
+        <h1>Will you be my Valentine?<span class="heart-arrow">💘</span></h1>
+        <div class="buttons">
+            <button id="btn-oui">Yes</button>
+            <button id="btn-non">No</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const btnNon = document.getElementById('btn-non');
+    const btnOui = document.getElementById('btn-oui');
+    const content = document.getElementById('content');
+
+    // Position initiale du bouton No
+    function setInitialPosition() {
+        const buttonsContainer = btnNon.parentElement;
+        const rect = buttonsContainer.getBoundingClientRect();
+        btnNon.style.left = (rect.width / 2 + 60) + 'px';
+        btnNon.style.top = '0px';
+    }
+
+    // Le bouton NO s'enfuit quand on survole
+    btnNon.addEventListener('mouseover', () => {
+        const maxX = window.innerWidth - btnNon.offsetWidth - 20;
+        const maxY = window.innerHeight - btnNon.offsetHeight - 20;
+        const minX = 20;
+        const minY = 20;
+        
+        const x = Math.random() * (maxX - minX) + minX;
+        const y = Math.random() * (maxY - minY) + minY;
+        
+        btnNon.style.left = x + 'px';
+        btnNon.style.top = y + 'px';
+        btnNon.style.position = 'fixed';
+        btnNon.style.transition = 'all 0.1s ease';
+    });
+
+    // Le bouton YES gagne
+    btnOui.addEventListener('click', () => {
+        // Envoi du clic à l'API pour compter
+        fetch('https://api.countapi.xyz/hit/mon-valentin-2026/clics')
+            .catch(err => console.log('API call failed:', err));
+
+        // Changement du contenu
+        content.innerHTML = `
+            <img class="bear-image" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmY0b2J1ZHNxMmh5NWE1dm9rNGgxeW53aTVtdzNydGJmM2l0aXg3NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BOPz50G5Cf2Y5XS9Ba/giphy.gif" alt="Celebration">
+            <h1>Yay! I knew it! ❤️</h1>
+        `;
+
+        // Cacher le bouton No
+        btnNon.style.display = 'none';
+    });
+
+    // Initialiser la position au chargement
+    window.addEventListener('load', setInitialPosition);
+    window.addEventListener('resize', setInitialPosition);
+</script>
+
+</body>
+</html>
