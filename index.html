@@ -53,9 +53,11 @@
             margin-top: 1rem;
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
             position: relative;
             min-height: 50px;
+            width: 100%;
         }
 
         button {
@@ -87,7 +89,7 @@
 
         #btn-non {
             background-color: #f44336;
-            position: absolute;
+            position: relative;
         }
 
         #btn-non:hover {
@@ -114,22 +116,7 @@
 
 <div id="container">
     <div id="content">
-        <img class="bear-image" src="https://i.imgur.com/bear-rose-valentine.png" alt="Bear with rose" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <svg class="bear-image" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-            <circle cx="200" cy="180" r="80" fill="#d4a574"/>
-            <circle cx="180" cy="160" r="15" fill="#000"/>
-            <circle cx="220" cy="160" r="15" fill="#000"/>
-            <ellipse cx="200" cy="190" rx="20" ry="15" fill="#8b4513"/>
-            <path d="M 200 200 Q 200 220 180 230" stroke="#8b4513" stroke-width="3" fill="none"/>
-            <circle cx="200" cy="250" r="60" fill="#d4a574"/>
-            <ellipse cx="200" cy="320" rx="50" ry="40" fill="#d4a574"/>
-            <path d="M 120 200 Q 100 180 90 160 Q 100 150 120 160" fill="#d4a574"/>
-            <path d="M 280 200 Q 300 180 310 160 Q 300 150 280 160" fill="#d4a574"/>
-            <circle cx="150" cy="140" r="8" fill="#ff69b4"/>
-            <circle cx="250" cy="140" r="8" fill="#ff69b4"/>
-            <circle cx="200" cy="120" r="6" fill="#ff69b4"/>
-            <path d="M 200 100 Q 190 80 200 70 Q 210 80 200 100" fill="#ff1493" stroke="#ff1493" stroke-width="2"/>
-        </svg>
+        <img class="bear-image" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnhvNWxvbmo4d2tvcXd6eXdzZnoyZmx1bWF6cWRoMmw4ZzdkZTVqMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/owRQ9sDRJY3PAxacUD/giphy.gif" alt="Valentine GIF">
         <h1>Will you be my Valentine?<span class="heart-arrow">💘</span></h1>
         <div class="buttons">
             <button id="btn-oui">Yes</button>
@@ -143,12 +130,9 @@
     const btnOui = document.getElementById('btn-oui');
     const content = document.getElementById('content');
 
-    // Position initiale du bouton No
+    // Position initiale du bouton No (pas nécessaire maintenant qu'il est en position relative)
     function setInitialPosition() {
-        const buttonsContainer = btnNon.parentElement;
-        const rect = buttonsContainer.getBoundingClientRect();
-        btnNon.style.left = (rect.width / 2 + 60) + 'px';
-        btnNon.style.top = '0px';
+        // Le bouton est maintenant aligné normalement avec flexbox
     }
 
     // Le bouton NO s'enfuit quand on survole
@@ -165,6 +149,7 @@
         btnNon.style.top = y + 'px';
         btnNon.style.position = 'fixed';
         btnNon.style.transition = 'all 0.1s ease';
+        btnNon.style.zIndex = '1000';
     });
 
     // Le bouton YES gagne
